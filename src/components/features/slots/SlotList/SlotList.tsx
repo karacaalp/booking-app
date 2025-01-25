@@ -36,7 +36,7 @@ const SlotList: React.FC<SlotListProps> = ({
             <SlotButton
               key={slot.id}
               onClick={() => onButtonClick(slot.id)}
-              isBooked={slot.isBooked}
+              $isBooked={slot?.isBooked}
             >
               {new Date(slot.startDate).toLocaleTimeString("en-US", {
                 timeZone: "UTC",

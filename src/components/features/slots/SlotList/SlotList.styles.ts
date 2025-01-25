@@ -6,15 +6,17 @@ export const SlotListContainer = styled.div`
   gap: 10px;
 `;
 
-export const SlotButton = styled.button<{ isBooked: boolean }>`
+export const SlotButton = styled.button.attrs(() => ({
+  type: "button",
+}))<{ $isBooked?: boolean }>`
   padding: 10px 15px;
   cursor: pointer;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: ${({ isBooked }) => (isBooked ? "#ff6b6b" : "#51cf66")};
+  background-color: ${({ $isBooked }) => ($isBooked ? "#ff6b6b" : "#51cf66")};
   color: white;
 
   &:hover {
-    background-color: ${({ isBooked }) => (isBooked ? "#fa5252" : "#40c057")};
+    background-color: ${({ $isBooked }) => ($isBooked ? "#fa5252" : "#40c057")};
   }
 `;
