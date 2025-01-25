@@ -2,31 +2,32 @@ import Header from "@/components/common/Header/Header";
 import Modal from "@/components/common/Modal/Modal.tsx";
 import Form from "@/components/features/slots/Form/Form.tsx";
 import SlotList from "@/components/features/slots/SlotList/SlotList.tsx";
-import { QUERY_KEYS } from "@/constants/endpoints";
-import useSlotManagement from "@/hooks/slots/useSlotManagement.tsx";
-import { useQueryClient } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useSlotSearch } from "@/hooks/slots/useSlotSearch";
+import { useState } from "react";
 
 function CustomersHome() {
   const {
     selectedDate,
     setSelectedDate,
-    modalState,
-    handleModalOpen,
-    handleModalClose,
     data,
     isFetching,
     isError,
     error,
     refetch,
-  } = useSlotManagement();
+  } = useSlotSearch();
 
-  const queryClient = useQueryClient();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
 
-  const handleSearch = useCallback(() => {
-    queryClient.removeQueries({ queryKey: [QUERY_KEYS.fetchSlots] });
-    refetch();
-  }, [refetch]);
+  const handleModalOpen = (id: string) => {
+    setSelectedSlotId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedSlotId(null);
+  };
 
   return (
     <div className="p-4">
@@ -35,7 +36,7 @@ function CustomersHome() {
       <Form
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
-        onSearch={handleSearch}
+        onSearch={refetch}
         isLoading={isFetching}
       />
 
@@ -48,11 +49,12 @@ function CustomersHome() {
         />
       )}
 
-      {modalState.isOpen && modalState.selectedId && (
+      {isModalOpen && selectedSlotId && (
         <Modal
-          isOpen={modalState.isOpen}
+          isOpen={isModalOpen}
           onClose={handleModalClose}
-          id={modalState.selectedId}
+          id={selectedSlotId}
+          refetchSlots={refetch}
         />
       )}
     </div>

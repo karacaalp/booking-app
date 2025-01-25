@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 interface FormProps {
   selectedDate: Date | null;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setSelectedDate: (date: Date | null) => void;
   onSearch: () => void;
   isLoading: boolean;
 }

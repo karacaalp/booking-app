@@ -9,21 +9,22 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   id: string;
+  refetchSlots: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, id, refetchSlots }) => {
   const {
     data,
     isFetching,
     error,
-    refetch,
+    refetch: refetchSlotDetail,
     name,
     setName,
     handleBook,
     handleCancel,
     isCancelling,
     isBooking,
-  } = useModalManagement(id, isOpen, onClose);
+  } = useModalManagement(id, isOpen, onClose, refetchSlots);
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
@@ -66,7 +67,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
   );
 
   if (!isOpen) return null;
-  if (error) return <ErrorMessage onRefetch={refetch} />;
+  if (error) return <ErrorMessage onRefetch={refetchSlotDetail} />;
 
   return (
     <ModalWrapper onClick={handleWrapperClick}>
