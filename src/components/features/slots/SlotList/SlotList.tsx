@@ -1,5 +1,5 @@
 import { useModalContext } from "@/hooks/common/useModalContext";
-import { useSlotDetailContext } from "@/hooks/useSlotDetailContext";
+import { useSlotDetailContext } from "@/hooks/slots/useSlotDetailContext";
 import { ISlotDetails } from "../../../../types/slots";
 import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage";
 import { SlotButton, SlotListContainer } from "./SlotList.styles";

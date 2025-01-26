@@ -3,7 +3,7 @@ import { slotsApi } from "@/services/api/SlotsApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useModalContext } from "../common/useModalContext";
-import { useSlotDetailContext } from "../useSlotDetailContext";
+import { useSlotDetailContext } from "./useSlotDetailContext";
 
 export const useSlotApi = () => {
   const queryClient = useQueryClient();

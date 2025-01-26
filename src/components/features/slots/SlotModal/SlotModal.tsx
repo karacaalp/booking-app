@@ -6,7 +6,7 @@ import { QUERY_KEYS } from "@/constants/endpoints";
 import { useModalContext } from "@/hooks/common/useModalContext";
 import { useSlotApi } from "@/hooks/slots/useSlotsApi";
 import useSlotSearch from "@/hooks/slots/useSlotSearch";
-import { useSlotDetailContext } from "@/hooks/useSlotDetailContext";
+import { useSlotDetailContext } from "@/hooks/slots/useSlotDetailContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { toast } from "react-toastify";

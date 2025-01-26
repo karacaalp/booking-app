@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Layout from "./Layout.tsx";
-import { ModalProvider } from "./contexts/ModalContext";
+import { ModalProvider } from "./context/ModalContext.tsx";
 
 const SalesHome = lazy(() => import("./pages/sales-home/SalesHome"));
 const CustomersHome = lazy(
