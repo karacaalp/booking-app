@@ -3,7 +3,6 @@ import { API_ENDPOINTS } from "@/constants/endpoints";
 import { IApiResponse } from "@/types/api";
 import { IGetSlotsProps, ISlotDetails } from "@/types/slots";
 
-
 // Slot specific error class
 export class SlotApiError extends ApiError {
   constructor(message: string, statusCode?: number) {

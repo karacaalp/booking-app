@@ -1,11 +1,14 @@
 import Header from "@/components/common/Header/Header";
-import Modal from "@/components/common/Modal/Modal.tsx";
+import Modal from "@/components/common/Modal/Modal";
 import Form from "@/components/features/slots/Form/Form.tsx";
 import SlotList from "@/components/features/slots/SlotList/SlotList.tsx";
+import SlotModal from "@/components/features/slots/SlotModal/SlotModal";
+import { SlotDetailProvider } from "@/context/SlotDetailContext";
+import { useModalContext } from "@/hooks/common/useModalContext";
 import { useSlotSearch } from "@/hooks/slots/useSlotSearch";
-import { useState } from "react";
 
 function CustomersHome() {
+  const { isOpen } = useModalContext();
   const {
     selectedDate,
     setSelectedDate,
@@ -16,48 +19,33 @@ function CustomersHome() {
     refetch,
   } = useSlotSearch();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
-
-  const handleModalOpen = (id: string) => {
-    setSelectedSlotId(id);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedSlotId(null);
-  };
-
   return (
-    <div className="p-4">
-      <Header />
+    <SlotDetailProvider>
+      <div className="p-4">
+        <Header />
 
-      <Form
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        onSearch={refetch}
-        isLoading={isFetching}
-      />
-
-      {data && (
-        <SlotList
-          slots={data}
-          isError={isError}
-          error={error}
-          onButtonClick={handleModalOpen}
+        <Form
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          onSearch={refetch}
+          isLoading={isFetching}
         />
-      )}
 
-      {isModalOpen && selectedSlotId && (
-        <Modal
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          id={selectedSlotId}
-          refetchSlots={refetch}
-        />
-      )}
-    </div>
+        {data && (
+          <SlotList
+            slots={data}
+            isError={isError}
+            error={error}
+          />
+        )}
+
+        {isOpen && (
+          <Modal>
+            <SlotModal />
+          </Modal>
+        )}
+      </div>
+    </SlotDetailProvider>
   );
 }
 
