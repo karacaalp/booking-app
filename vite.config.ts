@@ -15,6 +15,8 @@ export default defineConfig({
           vendor: ["react", "react-dom"],
           utils: ["axios", "react-toastify"],
           ui: ["styled-components", "react-bootstrap"],
+          router: ["react-router-dom"],
+          query: ["@tanstack/react-query"],
         },
       },
     },
