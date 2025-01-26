@@ -1,15 +1,14 @@
 import { QUERY_KEYS } from "@/constants/endpoints";
 import { slotsApi } from "@/services/api/SlotsApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useModalContext } from "../common/useModalContext";
+import { useSlotDetailContext } from "./useSlotDetailContext";
 
-export const useModalManagement = (
-  id: string,
-  isOpen: boolean,
-  onClose: () => void
-) => {
+export const useSlotApi = () => {
   const queryClient = useQueryClient();
-  const [name, setName] = useState<string>("");
+  const { isOpen } = useModalContext();
+  const { id, setId, name, setName } = useSlotDetailContext();
 
   const { data, isFetching, error, refetch } = useQuery({
     queryKey: [QUERY_KEYS.fetchSlotDetails],
@@ -22,17 +21,16 @@ export const useModalManagement = (
   });
 
   const bookMutation = useMutation({
-    mutationFn: () => slotsApi.bookSlotById(id, name),
-    onSuccess: () => {
-      onClose();
+    mutationFn: () => {
+      if (!id || !name) throw new Error("Missing id or name");
+      return slotsApi.bookSlotById(id, name);
     },
   });
 
   const cancelMutation = useMutation({
-    mutationFn: () => slotsApi.cancelSlotById(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.fetchSlots] });
-      onClose();
+    mutationFn: () => {
+      if (!id) throw new Error("Missing id");
+      return slotsApi.cancelSlotById(id);
     },
   });
 
@@ -42,27 +40,18 @@ export const useModalManagement = (
     }
   }, [isOpen, queryClient]);
 
-  const handleBook = () => {
-    if (name.trim().length < 5) {
-      alert("Please enter a name with min 5 characters.");
-      return;
-    }
-    bookMutation.mutate();
-  };
-
-  const handleCancel = () => {
-    cancelMutation.mutate();
-  };
-
   return {
+    queryClient,
     data,
     isFetching,
     error,
     refetch,
     name,
     setName,
-    handleBook,
-    handleCancel,
+    id,
+    setId,
+    handleBook: bookMutation.mutateAsync,
+    handleCancel: cancelMutation.mutateAsync,
     isCancelling: cancelMutation.isPending,
     isBooking: bookMutation.isPending,
   };

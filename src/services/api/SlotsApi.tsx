@@ -1,29 +1,46 @@
-import axios from "axios";
-import { API_ENDPOINTS } from "../../constants/endpoints";
-import { IGetSlotsProps, ISlotDetails, ISlots } from "../../types/slots";
+import { ApiError, axiosInstance } from "@/config/axios";
+import { API_ENDPOINTS } from "@/constants/endpoints";
+import { IApiResponse } from "@/types/api";
+import { IGetSlotsProps, ISlotDetails } from "@/types/slots";
 
-const handleApiError = (e: unknown, operation: string) => {
-  console.error(`Error during ${operation}:`, e);
-  throw new Error(
-    `Operation failed: ${operation} - ${
-      e instanceof Error ? e.message : "Unknown error"
-    }`
-  );
+// Slot specific error class
+export class SlotApiError extends ApiError {
+  constructor(message: string, statusCode?: number) {
+    super(message, statusCode);
+    this.name = "SlotApiError";
+  }
+}
+
+export class SlotNotFoundError extends SlotApiError {
+  constructor(slotId: string) {
+    super(`Slot bulunamadı: ${slotId}`, 404);
+    this.name = "SlotNotFoundError";
+  }
+}
+
+// Hata yönetimi için yardımcı fonksiyon
+const handleSlotApiError = (error: unknown, operation: string) => {
+  if (error instanceof ApiError) {
+    throw new SlotApiError(error.message, error.statusCode);
+  }
+  throw new SlotApiError(`Unexpected error during ${operation}`);
 };
 
 export const slotsApi = {
-  getSlots: async (params: IGetSlotsProps = {}) => {
+  getSlots: async (
+    params: IGetSlotsProps = {}
+  ): Promise<ISlotDetails[] | undefined> => {
     try {
-      const response = await axios.get<ISlots>(`${API_ENDPOINTS.SLOTS}`, {
-        params,
-      });
-      const data = await response.data;
-      if (data.success) {
-        return data.data;
-      }
-      throw new Error("Server response unsuccessful");
-    } catch (e) {
-      handleApiError(e, "fetching slot list");
+      const {
+        data: { data },
+      } = await axiosInstance.get<IApiResponse<ISlotDetails[]>>(
+        API_ENDPOINTS.SLOTS,
+        { params }
+      );
+      return data;
+    } catch (error) {
+      handleSlotApiError(error, "fetching slot list");
+      return undefined;
     }
   },
 
@@ -32,17 +49,16 @@ export const slotsApi = {
     signal: AbortSignal
   ): Promise<ISlotDetails | undefined> => {
     try {
-      const response = await axios.get<any>(
-        `${API_ENDPOINTS.SLOT_DETAILS(id)}`,
+      const {
+        data: { data },
+      } = await axiosInstance.get<IApiResponse<ISlotDetails>>(
+        API_ENDPOINTS.SLOT_DETAILS(id),
         { signal }
       );
-      const data = await response.data;
-      if (data.success) {
-        return data.data;
-      }
-      throw new Error("Server response unsuccessful");
-    } catch (e) {
-      handleApiError(e, "fetching slot details");
+      return data;
+    } catch (error) {
+      handleSlotApiError(error, `fetching slot details with ID: ${id}`);
+      return undefined;
     }
   },
 
@@ -51,32 +67,30 @@ export const slotsApi = {
     name: string
   ): Promise<ISlotDetails | undefined> => {
     try {
-      const response = await axios.post<any>(
+      const {
+        data: { data },
+      } = await axiosInstance.post<IApiResponse<ISlotDetails>>(
         `${API_ENDPOINTS.SLOT_DETAILS(id)}/book`,
         { name }
       );
-      const data = await response.data;
-      if (data.success) {
-        return data.data;
-      }
-      throw new Error("Server response unsuccessful");
-    } catch (e) {
-      handleApiError(e, "booking slot");
+      return data;
+    } catch (error) {
+      handleSlotApiError(error, `booking slot with ID: ${id}`);
+      return undefined;
     }
   },
 
   cancelSlotById: async (id: string): Promise<ISlotDetails | undefined> => {
     try {
-      const response = await axios.post<any>(
+      const {
+        data: { data },
+      } = await axiosInstance.post<IApiResponse<ISlotDetails>>(
         `${API_ENDPOINTS.SLOT_DETAILS(id)}/cancel-booking`
       );
-      const data = await response.data;
-      if (data.success) {
-        return data.data;
-      }
-      throw new Error("Server response unsuccessful");
-    } catch (e) {
-      handleApiError(e, "canceling slot");
+      return data;
+    } catch (error) {
+      handleSlotApiError(error, `canceling slot with ID: ${id}`);
+      return undefined;
     }
   },
 };

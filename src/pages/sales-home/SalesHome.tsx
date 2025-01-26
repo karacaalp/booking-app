@@ -1,6 +1,6 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage/ErrorMessage";
 import Header from "@/components/common/Header/Header";
-import useSlotManagement from "@/hooks/slots/useSlotManagement";
+import { useSlotSearch } from "@/hooks/slots/useSlotSearch";
 import { slotsApi } from "@/services/api/SlotsApi";
 import { lazy, Suspense, useEffect } from "react";
 const ReservationsTable = lazy(
@@ -8,7 +8,7 @@ const ReservationsTable = lazy(
 );
 
 function SalesHome() {
-  const { data, isFetching, isError, error, refetch } = useSlotManagement({
+  const { data, isFetching, isError, error, refetch } = useSlotSearch({
     isBooked: true,
   });
 

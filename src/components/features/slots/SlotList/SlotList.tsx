@@ -1,3 +1,5 @@
+import { useModalContext } from "@/hooks/common/useModalContext";
+import { useSlotDetailContext } from "@/hooks/slots/useSlotDetailContext";
 import { ISlotDetails } from "../../../../types/slots";
 import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage";
 import { SlotButton, SlotListContainer } from "./SlotList.styles";
@@ -6,15 +8,12 @@ interface SlotListProps {
   slots: ISlotDetails[];
   isError: boolean;
   error: unknown;
-  onButtonClick: (id: string) => void;
 }
 
-const SlotList: React.FC<SlotListProps> = ({
-  slots,
-  isError,
-  error,
-  onButtonClick,
-}) => {
+const SlotList: React.FC<SlotListProps> = ({ slots, isError, error }) => {
+  const { setId } = useSlotDetailContext();
+  const { onOpen } = useModalContext();
+
   if (isError) {
     return (
       <ErrorMessage
@@ -35,8 +34,11 @@ const SlotList: React.FC<SlotListProps> = ({
           slots.map((slot) => (
             <SlotButton
               key={slot.id}
-              onClick={() => onButtonClick(slot.id)}
-              isBooked={slot.isBooked}
+              onClick={() => {
+                setId(slot.id);
+                onOpen();
+              }}
+              $isBooked={slot?.isBooked}
             >
               {new Date(slot.startDate).toLocaleTimeString("en-US", {
                 timeZone: "UTC",

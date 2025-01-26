@@ -6,7 +6,9 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Layout from "./Layout.tsx";
+import { ModalProvider } from "./context/ModalContext.tsx";
 
 const SalesHome = lazy(() => import("./pages/sales-home/SalesHome"));
 const CustomersHome = lazy(
@@ -26,9 +28,12 @@ const router = createBrowserRouter(
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <RouterProvider router={router} />
-      </Suspense>
+      <ToastContainer />
+      <ModalProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <RouterProvider router={router} />
+        </Suspense>
+      </ModalProvider>
     </QueryClientProvider>
   );
 }
