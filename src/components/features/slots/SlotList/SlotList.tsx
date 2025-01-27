@@ -1,11 +1,11 @@
 import { useModalContext } from "@/hooks/common/useModalContext";
-import { useSlotDetailContext } from "@/hooks/slots/useSlotDetailContext";
-import { ISlotDetails } from "../../../../types/slots";
+import { useSlotDetailContext } from "@/hooks/contexts/useSlotDetailContext";
 import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage";
 import { SlotButton, SlotListContainer } from "./SlotList.styles";
+import { ISlot } from "@/types/slots";
 
 interface SlotListProps {
-  slots: ISlotDetails[];
+  slots: ISlot[];
   isError: boolean;
   error: unknown;
 }

@@ -1,11 +1,10 @@
-import { IGetSlotsProps } from "@/types/slots";
-import { useState } from "react";
-import { useSlotQuery } from "./useSlotQuery";
+import { QUERY_KEYS } from "@/constants/endpoints";
+import { slotsApi } from "@/services/api/SlotsApi";
+import { IGetSlotsProps, ISlot } from "@/types/slots";
+import { useQuery } from "@tanstack/react-query";
 
 interface SlotSearchReturn {
-  selectedDate: Date | null;
-  setSelectedDate: (date: Date | null) => void;
-  data: ReturnType<typeof useSlotQuery>["data"];
+  data: ISlot[] | undefined;
   isFetching: boolean;
   isError: boolean;
   error: unknown;
@@ -13,17 +12,16 @@ interface SlotSearchReturn {
 }
 
 export const useSlotSearch = (params?: IGetSlotsProps): SlotSearchReturn => {
-  const INITIAL_DATE = new Date("2024-08-01");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(INITIAL_DATE);
-
-  const { data, isFetching, isError, refetch, error } = useSlotQuery({
-    date: selectedDate?.toISOString().split("T")[0],
-    ...params,
+  const { data, isFetching, isError, refetch, error } = useQuery({
+    queryKey: [QUERY_KEYS.fetchSlots, params],
+    queryFn: () =>
+      slotsApi.getSlots({
+        ...params,
+      }),
+    enabled: false,
   });
 
   return {
-    selectedDate,
-    setSelectedDate: (date: Date | null) => setSelectedDate(date),
     data,
     isFetching,
     isError,

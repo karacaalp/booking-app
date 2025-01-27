@@ -1,20 +1,13 @@
 import { ApiError, axiosInstance } from "@/config/axios";
 import { API_ENDPOINTS } from "@/constants/endpoints";
 import { IApiResponse } from "@/types/api";
-import { IGetSlotsProps, ISlotDetails } from "@/types/slots";
+import { IGetSlotsProps, ISlot } from "@/types/slots";
 
 // Slot specific error class
 export class SlotApiError extends ApiError {
   constructor(message: string, statusCode?: number) {
     super(message, statusCode);
     this.name = "SlotApiError";
-  }
-}
-
-export class SlotNotFoundError extends SlotApiError {
-  constructor(slotId: string) {
-    super(`Slot bulunamadı: ${slotId}`, 404);
-    this.name = "SlotNotFoundError";
   }
 }
 
@@ -27,31 +20,28 @@ const handleSlotApiError = (error: unknown, operation: string) => {
 };
 
 export const slotsApi = {
-  getSlots: async (
-    params: IGetSlotsProps = {}
-  ): Promise<ISlotDetails[] | undefined> => {
+  getSlots: async (params: IGetSlotsProps = {}): Promise<ISlot[]> => {
     try {
       const {
         data: { data },
-      } = await axiosInstance.get<IApiResponse<ISlotDetails[]>>(
-        API_ENDPOINTS.SLOTS,
-        { params }
-      );
+      } = await axiosInstance.get<IApiResponse<ISlot[]>>(API_ENDPOINTS.SLOTS, {
+        params,
+      });
       return data;
     } catch (error) {
       handleSlotApiError(error, "fetching slot list");
-      return undefined;
+      return [];
     }
   },
 
   getSlotById: async (
     id: string,
     signal: AbortSignal
-  ): Promise<ISlotDetails | undefined> => {
+  ): Promise<ISlot | undefined> => {
     try {
       const {
         data: { data },
-      } = await axiosInstance.get<IApiResponse<ISlotDetails>>(
+      } = await axiosInstance.get<IApiResponse<ISlot>>(
         API_ENDPOINTS.SLOT_DETAILS(id),
         { signal }
       );
@@ -65,11 +55,11 @@ export const slotsApi = {
   bookSlotById: async (
     id: string,
     name: string
-  ): Promise<ISlotDetails | undefined> => {
+  ): Promise<ISlot | undefined> => {
     try {
       const {
         data: { data },
-      } = await axiosInstance.post<IApiResponse<ISlotDetails>>(
+      } = await axiosInstance.post<IApiResponse<ISlot>>(
         `${API_ENDPOINTS.SLOT_DETAILS(id)}/book`,
         { name }
       );
@@ -80,11 +70,11 @@ export const slotsApi = {
     }
   },
 
-  cancelSlotById: async (id: string): Promise<ISlotDetails | undefined> => {
+  cancelSlotById: async (id: string): Promise<ISlot | undefined> => {
     try {
       const {
         data: { data },
-      } = await axiosInstance.post<IApiResponse<ISlotDetails>>(
+      } = await axiosInstance.post<IApiResponse<ISlot>>(
         `${API_ENDPOINTS.SLOT_DETAILS(id)}/cancel-booking`
       );
       return data;
