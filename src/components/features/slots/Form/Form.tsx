@@ -51,6 +51,7 @@ const Form: React.FC<FormProps> = ({
           onClick={onSearch}
           style={{ marginLeft: "10px", padding: "5px 10px", cursor: "pointer" }}
           disabled={isLoading || !!error || !selectedDate}
+          aria-label={isLoading ? "Searching" : "Search"}
         >
           {isLoading ? "Searching..." : "Search"}
         </button>

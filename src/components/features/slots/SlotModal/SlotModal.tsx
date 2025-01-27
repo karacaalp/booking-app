@@ -83,9 +83,9 @@ const SlotModal = ({ refetchSlots }: SlotModalProps) => {
   }, [data?.startDate]);
 
   if (error) return <ErrorMessage onRefetch={refetchSlotDetail} />;
+  if (isFetching) return <p>Loading...</p>;
 
   const renderContent = () => {
-    if (isFetching) return <p>Loading...</p>;
     if (!data) return null;
 
     return (

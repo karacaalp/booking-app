@@ -1,4 +1,10 @@
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+declare const process: {
+  env: {
+    VITE_API_URL?: string;
+  };
+};
+
+export const API_URL = process.env.VITE_API_URL || "http://localhost:3000";
 
 export const API_ENDPOINTS = {
   SLOTS: `${API_URL}/slots`,
