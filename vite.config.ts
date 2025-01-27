@@ -23,4 +23,5 @@ export default defineConfig({
     chunkSizeWarningLimit: 800,
     target: "esnext",
   },
+  base: "/booking-app/",
 });
