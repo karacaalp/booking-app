@@ -1,9 +1,9 @@
 import { DATE_FORMATS } from "@/constants/dateFormats";
-import { ISlotDetails } from "@/types/slots";
+import { ISlot } from "@/types/slots";
 import { Table } from "react-bootstrap";
 
 interface ReservationsTableProps {
-  data: ISlotDetails[] | undefined;
+  data: ISlot[] | undefined;
   isFetching: boolean;
   onCancel: (id: string) => void;
   onRefresh: () => void;

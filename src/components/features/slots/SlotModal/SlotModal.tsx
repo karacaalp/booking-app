@@ -4,30 +4,30 @@ import Modal from "@/components/common/Modal/Modal";
 import { DATE_FORMATS } from "@/constants/dateFormats";
 import { QUERY_KEYS } from "@/constants/endpoints";
 import { useModalContext } from "@/hooks/common/useModalContext";
-import { useSlotApi } from "@/hooks/slots/useSlotsApi";
-import useSlotSearch from "@/hooks/slots/useSlotSearch";
-import { useSlotDetailContext } from "@/hooks/slots/useSlotDetailContext";
+import { useSlotDetailContext } from "@/hooks/contexts/useSlotDetailContext";
+import { useBookSlot, useCancelSlot } from "@/hooks/slots";
+import { useSlotDetail } from "@/hooks/slots/useSlotDetail";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { toast } from "react-toastify";
 
-const SlotModal = () => {
+interface SlotModalProps {
+  refetchSlots: () => void;
+}
+
+const SlotModal = ({ refetchSlots }: SlotModalProps) => {
+  const { id, setId } = useSlotDetailContext();
+  const { onClose } = useModalContext();
+  const queryClient = useQueryClient();
+
   const {
     data,
     isFetching,
     error,
     refetch: refetchSlotDetail,
-    name,
-    setName,
-    handleBook,
-    handleCancel,
-    isCancelling,
-    isBooking,
-  } = useSlotApi();
-  const { refetch: refetchSlots } = useSlotSearch();
-  const { setId } = useSlotDetailContext();
-  const { onClose } = useModalContext();
-  const queryClient = useQueryClient();
+  } = useSlotDetail();
+  const { bookSlot, isBooking } = useBookSlot();
+  const { cancelSlot, isCancelling } = useCancelSlot();
 
   const invalidateSlotDetail = () => {
     queryClient.removeQueries({
@@ -45,9 +45,9 @@ const SlotModal = () => {
     refetchSlots();
   };
 
-  const handleBookWithCallback = async () => {
+  const handleBookWithCallback = async (name: string) => {
     try {
-      await handleBook();
+      await bookSlot({ id: id!, name });
       callBackAction();
       toast.success("Booking successful");
     } catch (error) {
@@ -58,7 +58,7 @@ const SlotModal = () => {
 
   const handleCancelWithCallback = async () => {
     try {
-      await handleCancel();
+      await cancelSlot({ id: id! });
       callBackAction();
       toast.success("Cancelling successful");
     } catch (error) {
@@ -92,12 +92,10 @@ const SlotModal = () => {
       <BookingForm
         isCancelling={isCancelling}
         isBooking={isBooking}
-        name={name}
-        setName={setName}
         formattedDate={formattedDate}
         formattedTime={formattedTime}
         isBooked={data.isBooked}
-        bookedCustomerName={data.bookedCustomerName}
+        bookedCustomerName={data?.bookedCustomerName}
         onBook={handleBookWithCallback}
         onCancel={handleCancelWithCallback}
         onClose={onCloseWithCallback}

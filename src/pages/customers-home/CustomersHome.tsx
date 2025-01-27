@@ -6,18 +6,16 @@ import SlotModal from "@/components/features/slots/SlotModal/SlotModal";
 import { SlotDetailProvider } from "@/context/SlotDetailContext";
 import { useModalContext } from "@/hooks/common/useModalContext";
 import { useSlotSearch } from "@/hooks/slots/useSlotSearch";
+import { useState } from "react";
 
 function CustomersHome() {
+  const INITIAL_DATE = new Date("2024-08-01");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(INITIAL_DATE);
+
   const { isOpen } = useModalContext();
-  const {
-    selectedDate,
-    setSelectedDate,
-    data,
-    isFetching,
-    isError,
-    error,
-    refetch,
-  } = useSlotSearch();
+  const { data, isFetching, isError, error, refetch } = useSlotSearch({
+    date: selectedDate?.toISOString().split("T")[0],
+  });
 
   return (
     <SlotDetailProvider>
@@ -31,17 +29,11 @@ function CustomersHome() {
           isLoading={isFetching}
         />
 
-        {data && (
-          <SlotList
-            slots={data}
-            isError={isError}
-            error={error}
-          />
-        )}
+        {data && <SlotList slots={data} isError={isError} error={error} />}
 
         {isOpen && (
           <Modal>
-            <SlotModal />
+            <SlotModal refetchSlots={refetch} />
           </Modal>
         )}
       </div>

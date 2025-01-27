@@ -1,22 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface BookingFormProps {
-  name: string;
   bookedCustomerName?: string;
-  setName: (name: string) => void;
   formattedDate: string;
   formattedTime: string;
-  isBooked: boolean;
+  isBooked: boolean | undefined;
   isCancelling: boolean;
   isBooking: boolean;
-  onBook: () => void;
+  onBook: (name: string) => void;
   onCancel: () => void;
   onClose: () => void;
 }
 
 export const BookingForm: React.FC<BookingFormProps> = ({
-  name,
-  setName,
   bookedCustomerName,
   formattedDate,
   formattedTime,
@@ -27,6 +23,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
   onCancel,
   onClose,
 }) => {
+  const [name, setName] = useState<string>(bookedCustomerName || "");
+
   const handleCancelBooking = () => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
       onCancel();
@@ -77,7 +75,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
           </button>
         ) : (
           <button
-            onClick={onBook}
+            onClick={() => onBook(name)}
             style={{
               backgroundColor: isBooking ? "#d3d3d3" : "#007bff",
               color: "#fff",

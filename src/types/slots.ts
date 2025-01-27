@@ -1,13 +1,8 @@
 export interface ISlot {
   id: string;
   startDate: string;
-}
-
-export interface ISlotDetails extends ISlot {
-  isBooked: boolean;
+  isBooked?: boolean;
   bookedCustomerName?: string;
-  id: string;
-  startDate: string;
 }
 
 export interface IGetSlotsProps {
@@ -17,7 +12,7 @@ export interface IGetSlotsProps {
   bookedCustomerName?: string;
 }
 
-export interface ISlots {
+export interface ISlotResponse {
   success: boolean;
-  data: ISlotDetails[];
+  data: ISlot[];
 }
