@@ -7,6 +7,7 @@ interface ReservationsTableProps {
   isFetching: boolean;
   onCancel: (id: string) => void;
   onRefresh: () => void;
+  isCancelling: boolean;
 }
 
 function ReservationsTable({
@@ -14,6 +15,7 @@ function ReservationsTable({
   isFetching,
   onCancel,
   onRefresh,
+  isCancelling,
 }: ReservationsTableProps) {
   const handleCancelClick = (slotId: string) => {
     if (window.confirm("Are you sure you want to cancel this reservation?")) {
@@ -60,8 +62,9 @@ function ReservationsTable({
                 <button
                   className="btn btn-danger btn-sm"
                   onClick={() => handleCancelClick(slot.id)}
+                  disabled={isCancelling}
                 >
-                  Cancel
+                  {isCancelling ? "Cancelling..." : "Cancel"}
                 </button>
               </td>
             </tr>
