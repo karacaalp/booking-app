@@ -22,7 +22,10 @@ const router = createBrowserRouter(
       <Route index element={<CustomersHome />} />
       <Route path="sales" element={<SalesHome />} />
     </Route>
-  )
+  ),
+  {
+    basename: "/booking-app",
+  }
 );
 
 function App() {
